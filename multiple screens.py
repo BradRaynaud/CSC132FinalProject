@@ -1,5 +1,7 @@
 from Tkinter import *
 
+## * args is a list of arguments -as positional arguments
+## ** kwargs = dictionary - whose keys become separate keyword arguments and the values become values of these arguments.
 class Page(Frame):
     def __init__(self, *args, **kwargs):
         Frame.__init__(self, *args, **kwargs)
