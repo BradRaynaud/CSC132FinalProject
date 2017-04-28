@@ -5,7 +5,7 @@
 #
 #####################################################
 # Imports
-
+from time import sleep
 #####################################################
 # Room Class
 
@@ -54,8 +54,18 @@ class Room(object):
 
 
 #####################################################
-# Main Program
+# Room Creation
 
 Room1A = Room("Test_Room_1A")
 Room1A.addExits(northLocked=True, South=False)
 print Room1A
+
+####################################################
+# Main Program
+timer = 0
+# 600 ticks equals about 1 minute
+while timer != 600:
+    timer += 1
+    sleep(.1)
+
+
