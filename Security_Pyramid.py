@@ -33,13 +33,29 @@ class Room(object):
     def exits(self, value):
         self._exits = value
 
-    def addExit(self, exit, room, islocked=False, key=None):
-        # append the exit, room, islocked, and key to the appropriate dictionary
-        self._exits[exit] = [room, islocked, key]
+    # Generates the exits pass to it by the addExits function
+    def generateExit(self, Direction, Exists, Locked):
+        if Exists == True:
+            self.exits[Direction] = Locked
+
+    # Assumes that rooms exist in all 4 directions and they are unlocked, arguments can be provided to remove exits
+    # and lock exits
+    def addExits(self, North=True, South=True, East=True, West=True, northLocked=False, southLocked=False,
+                 eastLocked=False, westLocked=False):
+        self.generateExit("North", North, northLocked)
+        self.generateExit("South", South, southLocked)
+        self.generateExit("East", East, eastLocked)
+        self.generateExit("West", West, westLocked)
+
+    def __str__(self):
+        s = "{} ".format(self.name)
+        s += str(self.exits)
+        return s
+
 
 #####################################################
-R2 = Room("test2")
-R1 = Room("test")
-R1.addExit("north",R2)
+# Main Program
 
-print R1.exits
+Room1A = Room("Test_Room_1A")
+Room1A.addExits(northLocked=True, South=False)
+print Room1A
