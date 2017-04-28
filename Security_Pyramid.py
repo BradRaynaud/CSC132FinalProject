@@ -5,20 +5,16 @@
 #
 #####################################################
 # Imports
-from Tkinter import *
 
 #####################################################
 # Room Class
 
 class Room(object):
     # Constructor for the Room Class
-    def __init__(self, name, image):
+    def __init__(self, name):
         # information about constructor goes here
         self.name = name
-        self.image = image
         self.exits = {}
-        self.items = {}
-        self.grabbables = {}
 
     # Getters and setters
     @property
@@ -27,15 +23,7 @@ class Room(object):
 
     @name.setter
     def name(self, value):
-        self.name = value
-
-    @property
-    def image(self):
-        return self._image
-
-    @image.setter
-    def image(self,value):
-        self._image = value
+        self._name = value
 
     @property
     def exits(self):
@@ -45,22 +33,13 @@ class Room(object):
     def exits(self, value):
         self._exits = value
 
-    @property
-    def items(self):
-        return self._items
-
-    @items.setter
-    def items(self, value):
-        self._items = value
-
-    @property
-    def grabbables(self):
-        return self._grabbables
-
-    @grabbables.setter
-    def grabbables(self, value):
-        self._grabbables = value
-
-
+    def addExit(self, exit, room, islocked=False, key=None):
+        # append the exit, room, islocked, and key to the appropriate dictionary
+        self._exits[exit] = [room, islocked, key]
 
 #####################################################
+R2 = Room("test2")
+R1 = Room("test")
+R1.addExit("north",R2)
+
+print R1.exits
