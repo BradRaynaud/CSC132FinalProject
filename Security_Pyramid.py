@@ -65,23 +65,23 @@ class Game(Frame):
 
     def createRooms(self):
         Room1A = Room("Test_Room_1A")
-        Room1A.addExits(nSouth=False, nExit=)
         Room2A = Room("Test_Room_2A")
-        Room2A.addExits(East=False)
         Room3A = Room("Test_Room_3A")
-        Room3A.addExits(North=False, South=False)
         Room4A = Room("Test_Room_4A")
-        Room4A.addExits(West=False)
         Room5A = Room("Test_Room_5A")
-        Room5A.addExits(eastLocked=True, westLocked=True, nExit=True)
         Room6A = Room("Test_Room_6A")
-        Room6A.addExits(North=False, East=False)
-        Room7A = Room("Test_Room_6A")
-        Room7A.addExits(South=False, East=False)
+        Room7A = Room("Test_Room_7A")
         Room8A = Room("Test_Room_8A")
-        Room8A.addExits(South=False, West=False)
         Room9A = Room("Test_Room_9A")
-        Room9A.addExits(West=False, North=False, eastLocked=True)
+        Room1A.addExits(nSouth=False, nExit=Room5A, eExit=Room2A, wExit=Room4A)
+        Room2A.addExits(East=False, sExit=Room7A, nExit=Room6A, wExit=Room1A)
+        Room3A.addExits(North=False, South=False, eExit=Room7A, wExit=Room8A)
+        Room4A.addExits(West=False, eExit=Room1A, nExit=Room9A, sExit=Room8A)
+        Room5A.addExits(North=False, sExit=Room1A, eExit=Room6A, wExit=Room9A)
+        Room6A.addExits(North=False, East=False, wExit=Room5A, sExit=Room2A)
+        Room7A.addExits(South=False, East=False, nExit=Room2A, wExit=Room3A)
+        Room8A.addExits(South=False, West=False, eExit=Room3A, nExit=Room4A)
+        Room9A.addExits(West=False, North=False, sExit=Room4A, eExit=Room5A)
 
         Game.currentRoom = Room1A
 
