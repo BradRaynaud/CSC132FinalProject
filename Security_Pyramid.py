@@ -65,21 +65,21 @@ class Game(Frame):
 
     def createRooms(self):
         Room1A = Room("Test_Room_1A")
-        Room1A.addExits(northLocked=False, South=False, nExit = "CadeWhite")
+        Room1A.addExits(nSouth=False, nExit=)
         Room2A = Room("Test_Room_2A")
-        Room2A.addExits(southLocked=True, East=False)
+        Room2A.addExits(East=False)
         Room3A = Room("Test_Room_3A")
         Room3A.addExits(North=False, South=False)
         Room4A = Room("Test_Room_4A")
-        Room4A.addExits(southLocked=True, West=False)
+        Room4A.addExits(West=False)
         Room5A = Room("Test_Room_5A")
-        Room5A.addExits(southLocked=True, eastLocked=True, westLocked=True, nExit=True)
+        Room5A.addExits(eastLocked=True, westLocked=True, nExit=True)
         Room6A = Room("Test_Room_6A")
-        Room6A.addExits(westLocked=True, North=False, East=False)
+        Room6A.addExits(North=False, East=False)
         Room7A = Room("Test_Room_6A")
-        Room7A.addExits(northLocked=True, South=False, East=False)
+        Room7A.addExits(South=False, East=False)
         Room8A = Room("Test_Room_8A")
-        Room8A.addExits(northLocked=True, South=False, West=False)
+        Room8A.addExits(South=False, West=False)
         Room9A = Room("Test_Room_9A")
         Room9A.addExits(West=False, North=False, eastLocked=True)
 
@@ -92,9 +92,9 @@ class Game(Frame):
         Game.player_input.pack(side=BOTTOM, fill=X)
         Game.player_input.focus()
 
-    def status(self, response = None):
+    def status(self, response=None):
         c = "you are in room {} and possible exits include {}, and {}".format(Game.currentRoom.name,
-                                                                      Game.currentRoom.exits.keys(), response)
+                                                                              Game.currentRoom.exits.keys(), response)
         print c
 
     def play(self):
@@ -124,7 +124,6 @@ class Game(Frame):
             if noun in Game.currentRoom.exits:
                 if Game.currentRoom.exits[noun][0] == False:
                     print "EUREKA"
-
 
         self.status(response)
 
