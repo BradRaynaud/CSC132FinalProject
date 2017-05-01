@@ -45,10 +45,10 @@ class Room(object):
     # and lock exits
     def addExits(self, North=True, South=True, East=True, West=True, northLocked=False, southLocked=False,
                  eastLocked=False, westLocked=False, nExit=None, sExit=None, eExit=None, wExit=None):
-        self.generateExit("North", North, northLocked, nExit)
-        self.generateExit("South", South, southLocked, sExit)
-        self.generateExit("East", East, eastLocked, eExit)
-        self.generateExit("West", West, westLocked, wExit)
+        self.generateExit("north", North, northLocked, nExit)
+        self.generateExit("south", South, southLocked, sExit)
+        self.generateExit("east", East, eastLocked, eExit)
+        self.generateExit("west", West, westLocked, wExit)
 
     def __str__(self):
         s = "{} ".format(self.name)
@@ -65,7 +65,7 @@ class Game(Frame):
 
     def createRooms(self):
         Room1A = Room("Test_Room_1A")
-        Room1A.addExits(northLocked=True, South=False)
+        Room1A.addExits(northLocked=False, South=False, nExit = "CadeWhite")
 
         Game.currentRoom = Room1A
 
@@ -103,7 +103,11 @@ class Game(Frame):
 
         # the verb is go
         if verb == "go":
+            # sets a default response
             response = "Invalid Exit"
+            if noun in Game.currentRoom.exits:
+                if Game.currentRoom.exits[noun][0] == False:
+                    print "EUREKA"
 
 
         self.status(response)
