@@ -129,20 +129,27 @@ class Game(Frame):
                 if noun in Game.currentRoom.exits:
                     if Game.currentRoom.exits[noun][0] == False:
                         response = "Room Changed"
-                        Game.currentRoom = Game.currentRoom.exits[noun][1]
+                        self.moveRoom(noun)
                         Game.Score += 1
 
         self.status(response)
         Game.player_input.delete(0, END)  # clears the player input
 
+    def moveRoom(self, direction):
+        # needs to check if door is locked and find question if it is
+        Game.currentRoom = Game.currentRoom.exits[direction][1]
+
 
 ####################################################
 # Functions
-def detectKeyboard():
+def detectKeyboardInput():
     pass
+    # if you detect keyboard input call the function Game.moveRoom(direction)
 
 def saveScore():
     pass
+    # function switches to the scoreboard and Saves the score onto the save file
+    # also references the score file to pull up the top 5
 
 
 ####################################################
@@ -165,7 +172,7 @@ GAME = "Temp"
 # substitutes mainloop due to window.mainloop being an Infinite While true loop
 while True:
     window.update()
-    detectKeyboard()
+    detectKeyboardInput()
     if GAME == "End":
         saveScore()
     Timer += 1
