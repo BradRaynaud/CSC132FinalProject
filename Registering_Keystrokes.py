@@ -17,6 +17,7 @@ while True:
                 print "north"
             elif _ is "down":
                 print "south"
+        #if this doesn't work, let me know
         key = pygame.key.get_pressed()
         print key
     sleep(4)
