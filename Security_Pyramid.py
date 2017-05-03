@@ -8,6 +8,9 @@
 from time import sleep
 from Tkinter import *
 
+#####################################################
+# Variables
+Timer = 0
 
 #####################################################
 # Room Class
@@ -73,7 +76,7 @@ class Game(Frame):
         Room7A = Room("Test_Room_7A")
         Room8A = Room("Test_Room_8A")
         Room9A = Room("Test_Room_9A")
-        Room1A.addExits(nSouth=False, nExit=Room5A, eExit=Room2A, wExit=Room4A)
+        Room1A.addExits(South=False, nExit=Room5A, eExit=Room2A, wExit=Room4A)
         Room2A.addExits(East=False, sExit=Room7A, nExit=Room6A, wExit=Room1A)
         Room3A.addExits(North=False, South=False, eExit=Room7A, wExit=Room8A)
         Room4A.addExits(West=False, eExit=Room1A, nExit=Room9A, sExit=Room8A)
@@ -84,6 +87,7 @@ class Game(Frame):
         Room9A.addExits(West=False, North=False, sExit=Room4A, eExit=Room5A)
 
         Game.currentRoom = Room1A
+        Game.Score = 0
 
     def setupGUI(self):
         self.pack(fill=BOTH, expand=1)
@@ -93,8 +97,8 @@ class Game(Frame):
         Game.player_input.focus()
 
     def status(self, response=None):
-        c = "you are in room {} and possible exits include {}, and {}".format(Game.currentRoom.name,
-                                                                              Game.currentRoom.exits.keys(), response)
+        c = "you are in room {} and possible exits include {}, and {}, Score is {}".format(
+            Game.currentRoom.name, Game.currentRoom.exits.keys(), response, Game.Score)
         print c
 
     def play(self):
@@ -106,8 +110,9 @@ class Game(Frame):
         action = Game.player_input.get()
         action = action.lower()
 
-        if (action == "quit" or action == "exit" or action == "bye"):
-            quit(0)
+        if action == "quit" or action == "exit" or action == "bye":
+            quit()
+            response = "you tried to quit"
 
         words = action.split()
 
@@ -117,15 +122,27 @@ class Game(Frame):
             verb = words[0]
             noun = words[1]
 
-        # the verb is go
-        if verb == "go":
-            # sets a default response
-            response = "Invalid Exit"
-            if noun in Game.currentRoom.exits:
-                if Game.currentRoom.exits[noun][0] == False:
-                    print "EUREKA"
+            # the verb is go
+            if verb == "go":
+                # sets a default response
+                response = "Invalid Exit"
+                if noun in Game.currentRoom.exits:
+                    if Game.currentRoom.exits[noun][0] == False:
+                        response = "Room Changed"
+                        Game.currentRoom = Game.currentRoom.exits[noun][1]
+                        Game.Score += 1
 
         self.status(response)
+        Game.player_input.delete(0, END)  # clears the player input
+
+
+####################################################
+# Functions
+def detectKeyboard():
+    pass
+
+def saveScore():
+    pass
 
 
 ####################################################
@@ -142,5 +159,17 @@ g = Game(window)
 # play the game
 g.play()
 
+GAME = "Temp"
+
 # wait for the window to close
-window.mainloop()
+# substitutes mainloop due to window.mainloop being an Infinite While true loop
+while True:
+    window.update()
+    detectKeyboard()
+    if GAME == "End":
+        saveScore()
+    Timer += 1
+    sleep(.1)
+    if Timer == 60: # when the timer reaches the limit the game will switch to the score board and player score will be saved
+        # change to Scoreboard and save score
+        pass
