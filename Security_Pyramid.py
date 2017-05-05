@@ -7,10 +7,13 @@
 # Imports
 from time import sleep
 from Tkinter import *
+import msvcrt
 
 #####################################################
 # Variables
 Timer = 0
+TEMPQUESTION = {"Test":[["IncorrectA", False], ["IncorrectB", False], ["CorrectC", True], ["IncorrectD", False]]}
+EXIT = "Test_Room_7A"
 
 #####################################################
 # Room Class
@@ -76,7 +79,7 @@ class Game(Frame):
         Room7A = Room("Test_Room_7A")
         Room8A = Room("Test_Room_8A")
         Room9A = Room("Test_Room_9A")
-        Room1A.addExits(South=False, nExit=Room5A, eExit=Room2A, wExit=Room4A)
+        Room1A.addExits(South= False,nExit=Room5A, eExit=Room2A, wExit=Room4A, northLocked= True)
         Room2A.addExits(East=False, sExit=Room7A, nExit=Room6A, wExit=Room1A)
         Room3A.addExits(North=False, South=False, eExit=Room7A, wExit=Room8A)
         Room4A.addExits(West=False, eExit=Room1A, nExit=Room9A, sExit=Room8A)
@@ -126,30 +129,76 @@ class Game(Frame):
             if verb == "go":
                 # sets a default response
                 response = "Invalid Exit"
-                if noun in Game.currentRoom.exits:
-                    if Game.currentRoom.exits[noun][0] == False:
-                        response = "Room Changed"
-                        self.moveRoom(noun)
-                        Game.Score += 1
+                self.moveRoom(noun)
 
-        self.status(response)
         Game.player_input.delete(0, END)  # clears the player input
 
     def moveRoom(self, direction):
         # needs to check if door is locked and find question if it is
-        Game.currentRoom = Game.currentRoom.exits[direction][1]
-
+        if direction in Game.currentRoom.exits:
+            if Game.currentRoom.exits[direction][0] == False:
+                response = "Room Changed"
+                Game.currentRoom = Game.currentRoom.exits[direction][1]
+                self.Score += 1
+                self.status(response)
+            elif Game.currentRoom.exits[direction][0] == True:
+                response = "This exit is locked answer the question to continue or press 5 to give up"
+                self.status(response)
+                print "{}\nA):{}\nB):{}\nC):{}\nD):{}".format \
+                    (TEMPQUESTION.keys(), TEMPQUESTION["Test"][0][0], TEMPQUESTION["Test"][1][0],
+                     TEMPQUESTION["Test"][2][0], TEMPQUESTION["Test"][3][0])
+                question()
 
 ####################################################
 # Functions
-def detectKeyboardInput():
-    pass
+def detectKeyboardInputM():
     # if you detect keyboard input call the function Game.moveRoom(direction)
+    if msvcrt.kbhit():
+        key = msvcrt.getch()
+
+        # WSAD will be used to move from room to room
+        if key == "w":
+            g.moveRoom("north")
+        if key == "s":
+            g.moveRoom("south")
+        if key == "a":
+            g.moveRoom("west")
+        if key == "d":
+            g.moveRoom("east")
+
+def detectKeyboardInputQ():
+    # if you detect keyboard input call the function Game.moveRoom(direction)
+    if msvcrt.kbhit():
+        key = msvcrt.getch()
+
+        # 1,2,3,4 will be placeholders for A,B,C,D
+        if key == "1":
+            answerQuestion(0)
+        if key == "2":
+            answerQuestion(1)
+        if key == "3":
+            answerQuestion(2)
+        if key == "4":
+            answerQuestion(3)
+
 
 def saveScore():
-    pass
+    quit()
     # function switches to the scoreboard and Saves the score onto the save file
     # also references the score file to pull up the top 5
+
+def question():
+    global QUESTIONMODE
+    QUESTIONMODE = True
+
+def answerQuestion(choice):
+    global QUESTIONMODE
+    for answer in TEMPQUESTION:
+        if TEMPQUESTION[answer][choice][1] == True:
+            print "correct"
+            QUESTIONMODE = False
+        else:
+            print "incorrect"
 
 
 ####################################################
@@ -166,15 +215,23 @@ g = Game(window)
 # play the game
 g.play()
 
-GAME = "Temp"
+
+GAMEOVER = False
+QUESTIONMODE = False
 
 # wait for the window to close
 # substitutes mainloop due to window.mainloop being an Infinite While true loop
 while True:
     window.update()
-    detectKeyboardInput()
-    if GAME == "End":
+    detectKeyboardInputM()
+    while QUESTIONMODE == True:
+        detectKeyboardInputQ()
+        Timer += 1
+        sleep(.1)
+    if g.currentRoom.name == EXIT:
         saveScore()
+
+
     Timer += 1
     sleep(.1)
     if Timer == 60: # when the timer reaches the limit the game will switch to the score board and player score will be saved
