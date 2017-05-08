@@ -200,6 +200,10 @@ def answerQuestion(choice):
         else:
             print "incorrect"
 
+def generateSave():
+    pass
+    # This function Generates a save if a save file is not found
+
 
 ####################################################
 # Main Program
@@ -221,6 +225,7 @@ QUESTIONMODE = False
 
 # wait for the window to close
 # substitutes mainloop due to window.mainloop being an Infinite While true loop
+generateSave()
 while True:
     window.update()
     detectKeyboardInputM()
