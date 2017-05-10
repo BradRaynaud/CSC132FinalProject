@@ -62,7 +62,7 @@ class PageOne(Frame):
         self.controller = controller
         button = Button(self, text="Go to Main Menu",
                            command=lambda: controller.show_frame("StartPage"))
-         
+
         button.pack()
         #creates the paned window
         m1 = PanedWindow(self)
@@ -76,15 +76,15 @@ class PageOne(Frame):
 
         top = Label(m2, text="Answers")
         m2.add(top)
-    
+
         bottom = Label(m2, text="Console")
         m2.add(bottom)
-        
-        
-        
-    
-        
-            
+
+
+
+
+
+
 #when button two is pressed
 class PageTwo(Frame):
 
@@ -104,7 +104,7 @@ class PageTwo(Frame):
         button = Button(self, text="Go to the start page",
                            command=lambda: controller.show_frame("StartPage"))
         button.pack()
-             
+
 
 
 if __name__ == "__main__":

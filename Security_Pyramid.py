@@ -8,22 +8,29 @@
 from time import sleep
 from Tkinter import *
 import msvcrt
+from sys import *
+import os.path
+from random import randint
 
 #####################################################
 # Variables
 Timer = 0
 TEMPQUESTION = {"Test":[["IncorrectA", False], ["IncorrectB", False], ["CorrectC", True], ["IncorrectD", False]]}
 EXIT = "Test_Room_7A"
+DEFAULTSCORES = ["Score1\n", "Score2\n", "Score3\n", "Score4\n", "Score5\n"]
+GAMEOVER = False
+QUESTIONMODE = False
 
 #####################################################
 # Room Class
 
 class Room(object):
     # Constructor for the Room Class
-    def __init__(self, name):
+    def __init__(self, name, image = None):
         # information about constructor goes here
         self.name = name
         self.exits = {}
+        self.image = image
 
     # Getters and setters
     @property
@@ -41,6 +48,14 @@ class Room(object):
     @exits.setter
     def exits(self, value):
         self._exits = value
+
+    @property
+    def image(self):
+        return self._image
+
+    @image.setter
+    def image(self, value):
+        self._image = value
 
     # Generates the exits pass to it by the addExits function
     def generateExit(self, Direction, Exists, Locked, exitLocation):
@@ -70,15 +85,15 @@ class Game(Frame):
         Frame.__init__(self, parent)
 
     def createRooms(self):
-        Room1A = Room("Test_Room_1A")
-        Room2A = Room("Test_Room_2A")
-        Room3A = Room("Test_Room_3A")
-        Room4A = Room("Test_Room_4A")
-        Room5A = Room("Test_Room_5A")
-        Room6A = Room("Test_Room_6A")
-        Room7A = Room("Test_Room_7A")
-        Room8A = Room("Test_Room_8A")
-        Room9A = Room("Test_Room_9A")
+        Room1A = Room("Test_Room_1A", "skull.gif")
+        Room2A = Room("Test_Room_2A", "skull.gif")
+        Room3A = Room("Test_Room_3A", "skull.gif")
+        Room4A = Room("Test_Room_4A", "skull.gif")
+        Room5A = Room("Test_Room_5A", "skull.gif")
+        Room6A = Room("Test_Room_6A", "skull.gif")
+        Room7A = Room("Test_Room_7A", "skull.gif")
+        Room8A = Room("Test_Room_8A", "skull.gif")
+        Room9A = Room("Test_Room_9A", "skull.gif")
         Room1A.addExits(South= False,nExit=Room5A, eExit=Room2A, wExit=Room4A, northLocked= True)
         Room2A.addExits(East=False, sExit=Room7A, nExit=Room6A, wExit=Room1A)
         Room3A.addExits(North=False, South=False, eExit=Room7A, wExit=Room8A)
@@ -93,20 +108,79 @@ class Game(Frame):
         Game.Score = 0
 
     def setupGUI(self):
+        # Organize the GUI
         self.pack(fill=BOTH, expand=1)
+
+        # setup the player input at the bottom of the GUI
+        # the widget is a a Tkinter Entry
+        # set its background to white and bind the return to the
+        # function process in the class
+        # push it to the bottom of the GUI and let it fill
+        # horizontally
+        # give it focus so the player doesnt have to click on it
+
         Game.player_input = Entry(self, bg="white")
         Game.player_input.bind("<Return>", self.process)
-        Game.player_input.pack(side=BOTTOM, fill=X)
+        Game.player_input.grid(row = 3)
         Game.player_input.focus()
 
+        # setup the image to the left of the GUI
+        # the widget is a TKinter label
+        # don't let the image control the widget size
+        img = None
+        Game.image = Label(self, width=WIDTH / 2, image=img)
+        Game.image.image = img
+        Game.image.grid(row = 0, column = 0)
+        Game.image.pack_propagate(False)
+
+        # setup the text to the right of the GUI
+        # first the frame in which the text will be placed
+        text_frame = Frame(self, width=WIDTH / 4)
+        # widget is a TKINTER Text
+        # disable it by default
+        # don't let the widget control the frame's size
+        Game.text = Text(text_frame, bg="lightgrey", state=DISABLED)
+        Game.text.grid(row = 0, column = 2)
+        text_frame.grid(row = 0,column = 2)
+        text_frame.pack_propagate(False)
+
+        # menu bar at bottom
+        var = StringVar()
+        panel3 = Label(self, textvariable=var).grid(row=2, column=0, columnspan=1)
+
+        var2 = StringVar()
+        panel4 = Label(self, textvariable=var2).grid(row=2, column=1, columnspan=1)
+
+        var3 = StringVar()
+        panel5 = Label(self, textvariable=var3).grid(row=2, column=2, columnspan=1)
+
+        Button(self, text="Quit").grid(row=2, column=4, columnspan=1)
+        Button(self, text="Quit").grid(row=2, column=5, columnspan=1)
+
+        var.set("Score:0000(1)")
+        var2.set("Score:0000(2)")
+        var3.set("Score:0000(3)")
+
+
     def status(self, response=None):
-        c = "you are in room {} and possible exits include {}, and {}, Score is {}".format(
-            Game.currentRoom.name, Game.currentRoom.exits.keys(), response, Game.Score)
+        c = "test"
         print c
+
+    def setRoomImage(self):
+        if (Game.currentRoom == None):
+            # if dead, set the skull image
+            Game.img = PhotoImage(file="skull.gif")
+        else:
+            # otherwise grab the image for the current room
+            Game.img = PhotoImage(file=Game.currentRoom.image)
+        # display the image on the left of the GUI
+        Game.image.config(image=Game.img)
+        Game.image.image = Game.img
 
     def play(self):
         self.createRooms()
         self.setupGUI()
+        self.setRoomImage()
         self.status()
 
     def process(self, event):
@@ -114,7 +188,7 @@ class Game(Frame):
         action = action.lower()
 
         if action == "quit" or action == "exit" or action == "bye":
-            quit()
+            saveScore()
             response = "you tried to quit"
 
         words = action.split()
@@ -183,6 +257,7 @@ def detectKeyboardInputQ():
 
 
 def saveScore():
+    readSave()
     quit()
     # function switches to the scoreboard and Saves the score onto the save file
     # also references the score file to pull up the top 5
@@ -201,8 +276,17 @@ def answerQuestion(choice):
             print "incorrect"
 
 def generateSave():
-    pass
+    if os.path.isfile("save.txt") == False:
+        text_file = open("save.txt", "w")
+        text_file.writelines(DEFAULTSCORES)
+        text_file.close()
     # This function Generates a save if a save file is not found
+
+def readSave():
+    with open('save.txt', 'r') as file:
+        # read a list of lines into data
+        data = file.readlines()
+    return data
 
 
 ####################################################
@@ -220,12 +304,12 @@ g = Game(window)
 g.play()
 
 
-GAMEOVER = False
-QUESTIONMODE = False
+
+# Checks to see if a save file exists and if one is not found it creates a savefile
+generateSave()
 
 # wait for the window to close
 # substitutes mainloop due to window.mainloop being an Infinite While true loop
-generateSave()
 while True:
     window.update()
     detectKeyboardInputM()
