@@ -97,6 +97,7 @@ class Game(Frame):
     def __init(self, parent):
         Frame.__init__(self, parent)
 
+    # Function generates the rooms
     def createRooms(self):
         Room1A = Room("Test_Room_1A", "skull.gif")
         Room2A = Room("Test_Room_2A", "skull.gif")
@@ -117,9 +118,11 @@ class Game(Frame):
         Room8A.addExits(South=False, West=False, eExit=Room3A, nExit=Room4A)
         Room9A.addExits(West=False, North=False, sExit=Room4A, eExit=Room5A)
 
+
         Game.currentRoom = Room1A
         Game.Score = 0
 
+    # Function creates and formats the GUI
     def setupGUI(self):
         # Organize the GUI
         self.pack(fill=BOTH, expand=1)
@@ -166,6 +169,7 @@ class Game(Frame):
         var2.set("Score:0000(2)")
         var3.set("Score:0000(3)")
 
+    # exports the status to the GUI
     def status(self, response=None):
         # enable the text widget, clear it, set it, and disabled it
         Game.text.config(state=NORMAL)
@@ -173,13 +177,14 @@ class Game(Frame):
         if response == None:
             response = "Welcome to the Labyrinth."
         if (Game.currentRoom.name == "Test_Room_7A"):
-            # if dead, let the player know
+            # if the end is found let the player know
             response = "Congratulations you have found the exit"
 
         # otherwise, display the appropriate status
         Game.text.insert(END, str(Game.currentRoom) + "\n\n" + response)
         Game.text.config(state=DISABLED)
 
+    # exports a status to the GUI when the player is asked a question
     def questionStatus(self, response):
         # enable the text widget, clear it, set it, and disabled it
         Game.text.config(state=NORMAL)
@@ -191,14 +196,14 @@ class Game(Frame):
         Game.text.insert(END, response)
         Game.text.config(state=DISABLED)
 
-
-
+    # function that starts the GUI and plays the game
     def play(self):
         self.createRooms()
         self.setupGUI()
         self.status()
 
-
+    # function that moves the player from room to room
+    # if exit is locked it calls the askquestion function to setup the question mode
     def moveRoom(self, direction):
         global DIRECTION
         # needs to check if door is locked and find question if it is
@@ -210,16 +215,19 @@ class Game(Frame):
                 self.status(response)
             elif Game.currentRoom.exits[direction][0] == True:
                 self.askQuestion()
-                question()
                 DIRECTION = direction
 
+    # function that selects a question from the Dictionary and formats and exports the question to the questionStatus
+    #  function
     def askQuestion(self):
         global TEMPQUESTION
         QNAME = selectQuestion()
         TEMPQUESTION = QUESTIONDICT[QNAME]
         response = "{}\n{}\n{}\n{}".format(QNAME, TEMPQUESTION[0][0], TEMPQUESTION[1][0], TEMPQUESTION[2][0], TEMPQUESTION[3][0])
         self.questionStatus(response)
+        question()
 
+    # unlocks your current rooms exit in the direction provided via argument
     def unlockExit(self, direction):
         Game.currentRoom.exits[direction][0] = False
 
@@ -259,18 +267,21 @@ def detectKeyboardInputQ():
         if key == "4":
             answerQuestion(3)
 
-
+# This function is called when the game is over
 def saveScore():
     readSave()
     # function switches to the scoreboard and Saves the score onto the save file
     # also references the score file to pull up the top 5
 
-
+# This function starts question mode
 def question():
     global QUESTIONMODE
     QUESTIONMODE = True
 
-
+# this function is called when the player presses one of the assigned buttons for A/B/C/D
+# if the choice is correct then the player is "rewarded" by having their global point score increased
+# if the choice is incorrect then the player is "penalized" by loosing one of their remaining attempts
+# if the player runs out of attempts then the door unlocks but they loose a life
 def answerQuestion(choice):
     global QUESTIONMODE
     global SCORE
@@ -284,7 +295,8 @@ def answerQuestion(choice):
         print "incorrect"
 
 
-
+# This function checks to see if the save file exists and if one is found then nothing happens
+# however, if one is not found a file called save.txt is generated
 def generateSave():
     if os.path.isfile("save.txt") == False:
         text_file = open("save.txt", "w")
@@ -292,14 +304,18 @@ def generateSave():
         text_file.close()
         # This function Generates a save if a save file is not found
 
-
+# This function reads the save and converts it into a list
+# the list is returned
 def readSave():
     with open('save.txt', 'r') as file:
         # read a list of lines into data
         data = file.readlines()
     return data
 
-
+# This function reads the Questions.txt file and converts each line into a string
+# The string is then put into a list in order of occurence. After the string in each index of rawData is converted into
+# a dictionary in the format Dict[QuestionName] = [ [AnswerA, T or F], [AnswerB, T or F], [AnswerC, T or F], [AnswerD, T or F] ]
+# each key is then added to the list QUESTIONBANK
 def formatData():
     rawData = []
     # with is like your try .. finally block in this case
@@ -320,7 +336,7 @@ def formatData():
         QUESTIONBANK.append(rawData[i][0])
         QUESTIONDICT[rawData[i][0]][3][1] = QUESTIONDICT[rawData[i][0]][3][1][0]
 
-
+# chooses a random index of the QUESTIONBANK
 def selectQuestion():
     temp = randint(0, len(QUESTIONBANK) - 1)
     return QUESTIONBANK[temp]
