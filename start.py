@@ -6,19 +6,50 @@
 
 from Tkinter import *
 
-TITLE_FONT = ("Helvetica", 18, "bold")
-LARGE_FONT = ("Verdana", 12)
+class StartPage(Frame):
+    def __init(self, parent):
+        Frame.__init__(self, parent)
+        self.test = True
 
-window = Tk()
 
-label = Label(text="This is the start page", font=TITLE_FONT)
-label.pack(side="top", fill="x", pady=10)
+    def startMain_Game(self):
+        self.test = False
 
-button1 = Button(text="Start Game")
+    def startScore_Board(self):
+        pass
 
-button2 = Button(text="Go to Scoreboard")
+    test = True
 
-button1.pack()
-button2.pack()
+    def setup(self):
+        TITLE_FONT = ("Helvetica", 18, "bold")
+        LARGE_FONT = ("Verdana", 12)
 
-window.mainloop()
+        label = Label(text="This is the start page", font=TITLE_FONT)
+        label.pack(side="top", fill="x", pady=10)
+
+        button1 = Button(text="Start Game", command = self.startMain_Game)
+
+        button2 = Button(text="Go to Scoreboard")
+
+        button1.pack()
+        button2.pack()
+
+    def start(self):
+        self.setup()
+
+window = Toplevel
+
+# create the GUI as a Tkinter canvas inside the window
+g = StartPage(window)
+# play the game
+g.start()
+
+while g.test:
+    window.update()
+
+
+execfile("test.py")
+
+
+
+

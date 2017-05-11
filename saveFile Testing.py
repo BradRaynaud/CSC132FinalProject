@@ -2,7 +2,7 @@ from sys import *
 import os.path
 from random import randint
 
-example = []
+rawData = []
 PreDetermined = ["Line1\n", "Line2\n", "Line3\n", "Line4\n", "Line5\n"]
 testDict = {}
 Questionbank = []
@@ -21,21 +21,24 @@ if os.path.isfile("stats.txt") == False:
 else:
     print "This already Exists"
 
+def formatData():
+    # with is like your try .. finally block in this case
+    with open('stats.txt', 'r') as file:
+        # reads the text file and turns each line into a string
+        data = file.readlines()
 
-# with is like your try .. finally block in this case
-with open('stats.txt', 'r') as file:
-    # read a list of lines into data
-    data = file.readlines()
+    # splits each entry of the data list
+    for i in range(len(data)):
+        example.append(data[i].split("|"))
 
-for i in range(len(data)):
-    example.append(data[i].split("|"))
+    for i in range(len(example)):
+        testDict[example[i][0]] = [[example[i][1],example[i][2]],
+                                   [example[i][3],example[i][4]],
+                                   [example[i][5],example[i][6]],
+                                   [example[i][7],example[i][8]]]
 
-for i in range(len(example)):
-    print example[i]
+        Questionbank.append(example[i][0])
+        testDict[example[i][0]][3][1] = testDict[example[i][0]][3][1][0]
 
-for i in range(len(example)):
-    testDict[example[i][0]] = [example[i][1],example[i][2],example[i][3],example[i][4]]
-    Questionbank.append(example[i][0])
-
-
+formatData()
 selectQuestion()
