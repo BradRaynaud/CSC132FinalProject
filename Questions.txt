@@ -1,0 +1,5 @@
+Line1a|Line1b|F|Line1c|F|line1d|T|line1e|F
+Line2a|Line2b|T|Line2c|F|line2d|F|line2e|F
+Line3a|Line3b|F|Line3c|F|line3d|F|line3e|T
+Line4a|Line4b|F|Line4c|F|line4d|F|line4e|T
+Line5a|Line5b|F|Line5c|F|line5d|F|line5e|T
