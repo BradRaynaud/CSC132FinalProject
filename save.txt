@@ -1,5 +1,5 @@
-Score1
-Score2
-Score3
-Score4
-Score5
+Player:6000
+Tristan:1500
+Brad:1200
+Andrew:1000
+John:700

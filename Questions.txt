@@ -1,5 +1,20 @@
-Line1a|Line1b|F|Line1c|F|line1d|T|line1e|F
-Line2a|Line2b|T|Line2c|F|line2d|F|line2e|F
-Line3a|Line3b|F|Line3c|F|line3d|F|line3e|T
-Line4a|Line4b|F|Line4c|F|line4d|F|line4e|T
-Line5a|Line5b|F|Line5c|F|line5d|F|line5e|T
+Which of these is not a core datatype?|A. Lists|F|B. Dictionary|F|C. Class|T|D. Tuples|F
+Which of the following data types is not supported in python?|A. Numbers|F|B. String|F|C. List|F|D. Slice|T
+What is the output of print tinylist * 2 if tinylist = [123, 'john']?|A. [123, 'john', 123, 'john']|T|B. [123, 'john'] * 2|F|C. Error|F|D. None of the above.|F
+Which of the following functions convert an object to a regular expression in python?|A. repr(x)|T|B. eval(str)|F|C. tuple(s)|F|D. list(s)|F
+Which of the following functions convert an integer to an unicode character in python?|A. unichr(x)|T|B. ord(x)|F|C. hex(x)|F|D. oct(x)|F
+Which of the following functions randomizes the items of a list in place?|A. shuffle(list)|T|B. capitalize()|F|C. isalnum()|F|D. isdigit()|F
+Which of the following functions gets the length of the string?|A. isupper()|F|B. ljoin(seq)|F|C. len(string)|T|D. just(width[, fillchar])|F
+Which of the following functions returns the max alphabetical character from the string str?|A. lower()|F|B. lstrip()|F|C. max(str)|T|D. min(str)|F
+What is the output of for x in [1, 2, 3]: print x?|A. x x x|F|B. 1 2 3|T|C. Error|F|D. None of the above|F
+What is the following functions sorts a list?|A. list.reverse()|F|B. list.sort([func])|T|C. list.pop(obj=list[-1])|F|D. list.remove(obj)|F
+What is the output of print list[1:3] if list = [ 'abcd', 786 , 2.23, 'john', 70.2 ]?|A. [ 'abcd', 786 , 2.23, 'john', 70.2 ]|F|B. abcd|F|C. [786, 2.23]|T|D. None of the above.|F
+Which of the following functions converts a single character to its integer value in python?|A. unichr(x)|F|B. ord(x)|T|C. hex(x)|F|D. oct(x)|F
+Which of the following functions checks in a string that all characters are alphanumeric?|A. shuffle(lst)|F|B. capitalize()|F|isalnum()|T|isdigit()|F
+Which of the following functions checks in a string that all characters are decimal?|A. upper()|F|B. isdecimal()|T|C. swapcase()|F|D. title()|F
+What is the output of L[-2] if L = [1,2,3]?|A. 1|T|B. 2|F|C. 3|F|D. None of the above.|F
+Which of the following functions returns item from the list with min value?|A. cmp(list)|F|B. len(list)|F|C. max(list)|F|D. min(list)|T
+What is the output of print str[2:5] if str = 'Hello World!'?|A. llo World!|F|B. H|F|C. llo|T|D. None of the above.|F
+Which of the following functions convert a string to a float in python?|A. int(x [,base])|F|B. long(x [,base] )|F|C. float(x)|T|D. str(x)|F
+Which of the following operator in python performs exponential (power) calculation on operands?|A. **|T|B. //|F|C. is|F|D. not in|F
+Which of the following statement causes the loop to skip the remainder of its body and immediately retest its condition prior to reiterating?|A. break|F|B. continue|T|pass|F|None of the above.|F

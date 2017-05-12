@@ -17,17 +17,21 @@ from random import randint
 #####################################################
 # Variables
 Timer = 0
+global SCORE
 SCORE = 0
 TEMPQUESTION = []
 EXIT = "Test_Room_7A"
-DEFAULTSCORES = ["Score1\n", "Score2\n", "Score3\n", "Score4\n", "Score5\n"]
+DEFAULTSCORES = ["Cade:2500\n", "Tristan:1500\n", "Brad:1200\n", "Andrew:1000\n", "John:700\n"]
 GAMEOVER = False
+global QUESTIONMODE
 QUESTIONMODE = False
 QUESTIONDICT = {}
 QUESTIONBANK = []
 DIRECTION = None
 LIVES = 3
+global ATTEMPTS
 ATTEMPTS = 2
+GAMEACTIVE = True
 
 #####################################################
 # Room Class
@@ -246,7 +250,7 @@ class Game(Frame):
         H8.addExits(nExit=H7, East=False, South=False, West=False)
 
 
-        Game.currentRoom = D1
+        Game.currentRoom = E8
 
     # Function creates and formats the GUI
     def setupGUI(self, i):
@@ -279,8 +283,7 @@ class Game(Frame):
             text_frame.grid(row=0, column=2)
             text_frame.pack_propagate(False)
 
-            Button(self, text="Quit").grid(row=2, column=4, columnspan=1)
-            Button(self, text="Quit").grid(row=2, column=5, columnspan=1)
+            Button(self, text="Give Up", command = lambda: saveScore()).grid(row=2, column=4, columnspan=1)
 
 
     # exports the status to the GUI
@@ -304,10 +307,11 @@ class Game(Frame):
         Game.text.config(state=NORMAL)
         Game.text.delete("1.0", END)
 
-        response = "To get through the door answer the question\n" + response
+        response = "\nTo get through the door answer the question\n\n" + response
 
         # otherwise, display the appropriate status
-        Game.text.insert(END, response)
+        Game.text.insert(END, str(Game.currentRoom) +"\nScore:{}\nLives:{}\nAttempts Remaining:{}\n"
+                         .format(SCORE,LIVES,ATTEMPTS) + response)
         Game.text.config(state=DISABLED)
 
     # function that starts the GUI and plays the game
@@ -336,7 +340,6 @@ class Game(Frame):
         global TEMPQUESTION
         QNAME = selectQuestion()
         TEMPQUESTION = QUESTIONDICT[QNAME]
-        print TEMPQUESTION
         response = "{}\n{}\n{}\n{}\n{}".format(QNAME, TEMPQUESTION[0][0], TEMPQUESTION[1][0], TEMPQUESTION[2][0], TEMPQUESTION[3][0])
         self.questionStatus(response)
         question()
@@ -348,42 +351,46 @@ class Game(Frame):
 
 
 
+
 ####################################################
 # Functions
-def detectKeyboardInputM():
-    # if you detect keyboard input call the function Game.moveRoom(direction)
+
+# Function that looks to see if any "hotkeys" are pressed
+def detectInput(arg):
     if msvcrt.kbhit():
         key = msvcrt.getch()
+        if arg == 0:
+            # WSAD will be used to move from room to room
+            if key == "w":
+                g.moveRoom("north")
+            if key == "s":
+                g.moveRoom("south")
+            if key == "a":
+                g.moveRoom("west")
+            if key == "d":
+                g.moveRoom("east")
+        if arg == 1:
+            # 1,2,3,4 will be placeholders for A,B,C,D
+            if key == "1":
+                answerQuestion(0)
+            if key == "2":
+                answerQuestion(1)
+            if key == "3":
+                answerQuestion(2)
+            if key == "4":
+                answerQuestion(3)
 
-        # WSAD will be used to move from room to room
-        if key == "w":
-            g.moveRoom("north")
-        if key == "s":
-            g.moveRoom("south")
-        if key == "a":
-            g.moveRoom("west")
-        if key == "d":
-            g.moveRoom("east")
 
-
-def detectKeyboardInputQ():
-    # if you detect keyboard input call the function Game.moveRoom(direction)
-    if msvcrt.kbhit():
-        key = msvcrt.getch()
-        temp = None
-        # 1,2,3,4 will be placeholders for A,B,C,D
-        if key == "1":
-            answerQuestion(0)
-        if key == "2":
-            answerQuestion(1)
-        if key == "3":
-            answerQuestion(2)
-        if key == "4":
-            answerQuestion(3)
-
-# This function is called when the game is over
+# This function is called when the game is over or the player quits
 def saveScore():
-    readSave()
+    savedata = readSave()
+    savedata = formatSave(savedata)
+    savedata = compareData(savedata, SCORE)
+    savedata = reformatData(savedata)
+    pushData(savedata)
+    global GAMEACTIVE
+    GAMEACTIVE = False
+
     # function switches to the scoreboard and Saves the score onto the save file
     # also references the score file to pull up the top 5
 
@@ -398,16 +405,27 @@ def question():
 # if the player runs out of attempts then the door unlocks but they loose a life
 def answerQuestion(choice):
     global QUESTIONMODE
+    global LIVES
     global SCORE
-    if TEMPQUESTION[choice][1] == "T":
-        print "correct"
-        SCORE += 100
-        QUESTIONMODE = False
-        g.status()
-        g.unlockExit(DIRECTION)
-    else:
-        print "incorrect"
+    global ATTEMPTS
+    if ATTEMPTS > 0:
+        if TEMPQUESTION[choice][1] == "T":
+            print "correct"
+            SCORE += 100
+            QUESTIONMODE = False
+            g.status()
+            g.unlockExit(DIRECTION)
+        else:
+            print "incorrect"
+            ATTEMPTS -= 1
 
+    else:
+        LIVES -= 1
+        print LIVES
+        QUESTIONMODE = False
+        ATTEMPTS = 2
+        g.unlockExit(DIRECTION)
+        g.status()
 
 # This function checks to see if the save file exists and if one is found then nothing happens
 # however, if one is not found a file called save.txt is generated
@@ -455,6 +473,38 @@ def selectQuestion():
     temp = randint(0, len(QUESTIONBANK) - 1)
     return QUESTIONBANK[temp]
 
+# formats the raw data into something that can be used
+def formatSave(data):
+    for index in range(len(data)):
+        data[index] = data[index].split(":")
+        data[index][1] = data[index][1].split("\n")
+        del data[index][1][1]
+        data[index][1][0] = int(data[index][1][0])
+        data[index][1] = data[index][1][0]
+    return data
+
+# compares the scores and overwrites the appropriate scores
+def compareData(data, score):
+    for index in range(len(data)):
+        if score > data[index][1]:
+            data[index][1] = score
+            data[index][0] = "Player"
+            break
+    return data
+
+# formats the data into something that can be pushed back into the save file
+def reformatData(data):
+    for index in range(len(data)):
+        data[index] = str(data[index][0]) + ":" + str(data[index][1]) + "\n"
+    return data
+
+# writes the save data back into the save.txt
+def pushData(data):
+    print data
+    with open('save.txt', 'w') as file:
+        file.writelines(data)
+
+
 
 ####################################################
 # Main Program
@@ -472,23 +522,32 @@ g.play()
 
 # Checks to see if a save file exists and if one is not found it creates a savefile
 generateSave()
+
+# pulls all the questions from the Questions.txt file and converts it into something usable
 formatData()
+
 
 # wait for the window to close
 # substitutes mainloop due to window.mainloop being an Infinite While true loop
-while True:
+while GAMEACTIVE == True:
     window.update()
-    detectKeyboardInputM()
+    if LIVES != 0:
+        detectInput(0)
     while QUESTIONMODE == True:
         window.update()
-        detectKeyboardInputQ()
+        detectInput(1)
         Timer += 1
         sleep(.1)
     if g.currentRoom.name == EXIT:
         saveScore()
+    if LIVES == 0:
+        saveScore()
+        response = "You are out of lives Give up"
+        g.status(response)
 
     Timer += 1
     sleep(.1)
     if Timer == 60:  # when the timer reaches the limit the game will switch to the score board and player score will be saved
         # change to Scoreboard and save score
         pass
+quit()
